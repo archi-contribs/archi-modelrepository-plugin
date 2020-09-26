@@ -21,6 +21,7 @@ import org.archicontribs.modelrepository.preferences.IPreferenceConstants;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jgit.transport.UserAgent;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -44,6 +45,9 @@ public class ModelRepositoryPlugin extends AbstractUIPlugin implements PropertyC
      */
     public static ModelRepositoryPlugin INSTANCE;
     
+    public static String ENV_VAR_USERAGENT = "ARCHI_GIT_USERAGENT";
+    public static String ENV_VAR_ADDITIONALHEADER = "ARCHI_GIT_ADDITIONALHEADER";
+    
     public ModelRepositoryPlugin() {
         INSTANCE = this;
     }
@@ -52,7 +56,10 @@ public class ModelRepositoryPlugin extends AbstractUIPlugin implements PropertyC
     public void start(BundleContext context) throws Exception {
         super.start(context);
         IEditorModelManager.INSTANCE.addPropertyChangeListener(this);
-        
+        //override git useragent if specified in system property
+        if (System.getenv(ENV_VAR_USERAGENT) != null && !System.getenv(ENV_VAR_USERAGENT).isEmpty()) {
+        	UserAgent.set(System.getenv(ENV_VAR_USERAGENT));
+        }
         // Set this first
         ProxyAuthenticator.init();
     }

@@ -7,6 +7,8 @@ package org.archicontribs.modelrepository.authentication;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.archicontribs.modelrepository.ModelRepositoryPlugin;
 import org.archicontribs.modelrepository.grafico.GraficoUtils;
@@ -18,6 +20,7 @@ import org.eclipse.jgit.transport.OpenSshConfig;
 import org.eclipse.jgit.transport.SshSessionFactory;
 import org.eclipse.jgit.transport.SshTransport;
 import org.eclipse.jgit.transport.Transport;
+import org.eclipse.jgit.transport.TransportHttp;
 import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
 import org.eclipse.jgit.util.FS;
 import org.eclipse.osgi.util.NLS;
@@ -137,7 +140,19 @@ public final class CredentialsAuthenticator {
             return new TransportConfigCallback() {
                 @Override
                 public void configure(Transport transport) {
-                    transport.setCredentialsProvider(new UsernamePasswordCredentialsProvider(npw.getUsername(), npw.getPassword()));
+                    transport.setCredentialsProvider(new UsernamePasswordCredentialsProvider(npw.getUsername(), npw.getPassword()));                 
+                    // check for environment variable to add additional http headers to git request
+                    Map<String,String> envVariables = System.getenv();
+                    String additionalHeader = envVariables.get(ModelRepositoryPlugin.ENV_VAR_ADDITIONALHEADER);
+                    if (additionalHeader != null && transport instanceof TransportHttp) {
+                    	TransportHttp transportHttp = (TransportHttp) transport;
+                        Map<String, String> headerMap = new HashMap<String, String>(1);
+                        String headerKeyValue[] = additionalHeader.split(":");
+                        if (headerKeyValue.length==2) {
+                            headerMap.put(headerKeyValue[0], headerKeyValue[1]);
+                            transportHttp.setAdditionalHeaders(headerMap);
+                        }
+                    }
                 };
             };
         }
