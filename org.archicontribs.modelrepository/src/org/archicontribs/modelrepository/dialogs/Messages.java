@@ -115,6 +115,7 @@ public class Messages extends NLS {
     public static String UserNamePasswordDialog_5;
 
     public static String UserNamePasswordDialog_6;
+    public static String CloneInputDialog_btnCheckButton_text;
     static {
         // initialize resource bundle
         NLS.initializeMessages(BUNDLE_NAME, Messages.class);

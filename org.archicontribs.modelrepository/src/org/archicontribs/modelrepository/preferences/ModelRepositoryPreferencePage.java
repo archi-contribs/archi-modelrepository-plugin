@@ -228,6 +228,8 @@ implements IWorkbenchPreferencePage, IPreferenceConstants {
         gd = new GridData(GridData.FILL_HORIZONTAL);
         fStoreCredentialsButton.setLayoutData(gd);
         
+        //HTTP Skip SSL verification 
+        
         
         
         // Proxy Group

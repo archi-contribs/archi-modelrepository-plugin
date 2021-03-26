@@ -38,11 +38,13 @@ public class CloneInputDialog extends TitleAreaDialog {
     private Text txtPassword;
 
     private Button storeCredentialsButton;
+    private Button skipSSLButton;
     
     private String URL;
     private String username;
     private char[] password;
     private boolean doStoreCredentials;
+	private boolean skipSSLVerification;
 
     public CloneInputDialog(Shell parentShell) {
         super(parentShell);
@@ -82,6 +84,10 @@ public class CloneInputDialog extends TitleAreaDialog {
         txtPassword = createTextField(container, Messages.CloneInputDialog_4, SWT.PASSWORD);
         createPreferenceButton(container);
         
+        skipSSLButton = new Button(container, SWT.CHECK);
+        skipSSLButton.setText(Messages.CloneInputDialog_btnCheckButton_text);
+        new Label(container, SWT.NONE);
+        
         return area;
     }
     
@@ -116,12 +122,16 @@ public class CloneInputDialog extends TitleAreaDialog {
         password = txtPassword.getTextChars();
         URL = txtURL.getText().trim();
         doStoreCredentials = storeCredentialsButton.getSelection();
+        skipSSLVerification=skipSSLButton.getSelection();
     }
 
     @Override
     protected void okPressed() {
         saveInput();
         super.okPressed();
+    }
+    public boolean skipSSLverification() {
+    	return  skipSSLVerification;
     }
 
     public UsernamePassword getUsernamePassword() {
@@ -135,4 +145,5 @@ public class CloneInputDialog extends TitleAreaDialog {
     public boolean doStoreCredentials() {
         return doStoreCredentials;
     }
+    
 }
